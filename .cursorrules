@@ -39,7 +39,9 @@ Your goal is to maintain high context awareness and produce "AI-friendly + Human
 - **Nodes**: Pure functions in `*.nodes.py`.
 - **Graph**: Assembly in `*.graph.py`.
 - **Type Hinting**: Strict Python 3.10+ typing.
-- **Docstrings**: Google Style.
+- **Docstrings**: Google Style. Every function and class must have a docstring explaining purpose, args, and returns.
+- **Comments**: Must be written in **Korean** (한글).
+- **Formatter**: Black (implied standard).
 
 ## 4. Workflow (The Vibe Routine)
 

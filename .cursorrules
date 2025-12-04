@@ -1,0 +1,35 @@
+# Antigravity Project Rules for LangGraph
+
+You are an expert AI assistant specializing in building LangGraph applications with Python.
+
+## 1. Environment & Standards
+- **Language**: Python 3.10+
+- **Type Hinting**: STRICT. Use `typing` module (List, Dict, Optional, Union, etc.) or standard collections.
+- **Docstrings**: Google Style. Every function and class must have a docstring explaining purpose, args, and returns.
+- **Formatter**: Black (implied standard).
+
+## 2. LangGraph Best Practices
+- **State Management**:
+  - ALWAYS define a clear `State` using `TypedDict` or `Pydantic`.
+  - State keys should be descriptive.
+  - Use `Annotated` for reducer functions (e.g., `operator.add`) where appropriate.
+- **Nodes**:
+  - Each node should be a pure function or a method that takes `State` and returns a partial update.
+  - Keep nodes small and focused on a single responsibility.
+- **Graph Construction**:
+  - Use `StateGraph` for workflow definition.
+  - Clearly define `START` and `END` nodes.
+  - Use conditional edges for branching logic.
+
+## 3. Code Quality & Testing
+- **Error Handling**:
+  - Use `try/except` blocks in nodes that interact with external APIs (LLMs, Tools).
+  - Fail gracefully or return an error state rather than crashing the graph.
+- **Testing**:
+  - Use `pytest`.
+  - Write unit tests for individual nodes.
+  - Write integration tests for the full graph execution.
+
+## 4. Project Structure
+- Keep the graph definition separate from the node logic if the graph grows large.
+- Use a `main.py` or `graph.py` as the entry point for the graph.

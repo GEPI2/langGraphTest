@@ -56,4 +56,59 @@ def generate_code(state: AgentState) -> Dict[str, Any]:
         new_code = new_code.split("```python")[1].split("```")[0].strip()
     elif "```" in new_code:
         new_code = new_code.split("```")[1].split("```")[0].strip()
+
+    # 메시지 기록 업데이트 (AI 응답 추가)
+    messages.append(response)
+
+    return {"code": new_code, "iterations": iterations + 1, "error": None, "messages": messages}
+
+def execute_code(state: AgentState) -> Dict[str, Any]:
+    """
+    생성된 코드를 샌드박스(Docker) 환경에서 실행합니다.
+    """
+    code = state['code']
+    print("--- 코드 실행 중 (Sandbox) ---")
+    print(code)
+    print("-" * 20)
+    
+    # 샌드박스 실행
+    try:
+        # Docker가 없거나 실패할 경우를 대비한 안전장치 (개발 환경용)
+        # 실제 프로덕션에서는 Docker가 필수여야 합니다.
+        import docker
+        try:
+            docker.from_env().ping()
+            output = run_in_sandbox(code)
+        except Exception as e:
+            print(f"Docker 연결 실패, 로컬 실행으로 대체합니다: {e}")
+            # Fallback to local exec (WARNING: INSECURE)
+            old_stdout = sys.stdout
+            redirected_output = sys.stdout = io.StringIO()
+            try:
+                exec(code)
+                output = redirected_output.getvalue()
+            except Exception as exec_e:
+                output = str(exec_e)
+                return {"error": str(exec_e), "execution_output": None}
+            finally:
+                sys.stdout = old_stdout
+
+    except Exception as e:
+        return {"error": str(e), "execution_output": None}
+
+    print(f"Output: {output}")
+
+    # 에러 감지 (간단한 문자열 체크)
+    if "Error" in output or "Traceback" in output:
+        return {"error": output, "execution_output": None}
+    
+    return {"execution_output": output, "error": None}
+
+def human_review(state: AgentState) -> Dict[str, Any]:
+    """
+    사람의 검토를 위한 플레이스홀더입니다.
+    실제 앱에서는 여기서 외부 입력을 기다리는 중단점(Breakpoint)이 됩니다.
+    """
+    print("--- 사람 검토 대기 중 ---")
+    # interrupt_before를 사용하면 이 노드는 실제로 아무것도 안 해도 됩니다.
     return {}

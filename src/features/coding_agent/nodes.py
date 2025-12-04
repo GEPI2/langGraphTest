@@ -5,6 +5,7 @@ from typing import Dict, Any
 from dotenv import load_dotenv
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
+from src.shared.utils.sandbox import run_in_sandbox
 from .schema import AgentState
 
 # 환경 변수 로드 (.env)

@@ -62,8 +62,15 @@ workflow.add_conditional_edges(
     }
 )
 
-# 체크포인터 설정
-memory = MemorySaver()
+from langgraph.checkpoint.sqlite import SqliteSaver
+import sqlite3
+
+# ... (기존 코드)
+
+# 체크포인터 설정 (SQLite)
+# DB 파일이 없으면 자동 생성됩니다.
+conn = sqlite3.connect("checkpoints.sqlite", check_same_thread=False)
+memory = SqliteSaver(conn)
 
 # 컴파일 (human_review 전에 중단)
 app = workflow.compile(checkpointer=memory, interrupt_before=["human_review"])

@@ -56,38 +56,4 @@ def generate_code(state: AgentState) -> Dict[str, Any]:
         new_code = new_code.split("```python")[1].split("```")[0].strip()
     elif "```" in new_code:
         new_code = new_code.split("```")[1].split("```")[0].strip()
-
-    # 메시지 기록 업데이트 (AI 응답 추가)
-    messages.append(response)
-
-    return {"code": new_code, "iterations": iterations + 1, "error": None, "messages": messages}
-
-def execute_code(state: AgentState) -> Dict[str, Any]:
-    """
-    생성된 코드를 (비교적) 안전하게 실행합니다.
-    """
-    code = state['code']
-    print(f"--- 코드 실행 중 ---\n{code}\n--------------------")
-    
-    # 표준 출력 캡처
-    old_stdout = sys.stdout
-    redirected_output = sys.stdout = io.StringIO()
-    
-    try:
-        # 경고: exec()는 위험합니다. 실제 서비스에서는 샌드박스(E2B, Docker 등)를 사용하세요.
-        exec(code, {}, {})
-        output = redirected_output.getvalue()
-        return {"execution_output": output, "error": None}
-    except Exception as e:
-        return {"error": str(e), "execution_output": None}
-    finally:
-        sys.stdout = old_stdout
-
-def human_review(state: AgentState) -> Dict[str, Any]:
-    """
-    사람의 검토를 위한 플레이스홀더입니다.
-    실제 앱에서는 여기서 외부 입력을 기다리는 중단점(Breakpoint)이 됩니다.
-    """
-    print("--- 사람 검토 대기 중 ---")
-    # interrupt_before를 사용하면 이 노드는 실제로 아무것도 안 해도 됩니다.
     return {}

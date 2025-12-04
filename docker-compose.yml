@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8501:8501"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Mount Docker socket for DooD (Docker-outside-of-Docker)
+      - ./checkpoints.sqlite:/app/checkpoints.sqlite # Persist SQLite DB
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+    restart: unless-stopped

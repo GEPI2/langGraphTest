@@ -8,6 +8,11 @@
     - [x] 라이브러리 설치 & 코드 수정
     - [x] API Key 설정 (.env)
 
+- [ ] **UI 개발 (Streamlit)**
+  - [ ] Streamlit 설치
+  - [ ] 채팅 인터페이스 구현
+  - [ ] Human-in-the-loop 연동 (승인/거절 버튼)
+
 ## 4. AI 작업 가이드 (Workflow)
 
 1. **Coding Agent 개발** (Self-Correcting + HITL)

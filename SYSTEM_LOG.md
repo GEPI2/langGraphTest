@@ -1,15 +1,5 @@
 # SYSTEM_LOG.md
 
-# SYSTEM_LOG.md
-
-# SYSTEM_LOG.md
-
-# SYSTEM_LOG.md
-
-# SYSTEM_LOG.md
-
-# SYSTEM_LOG.md
-
     - [x] Human-in-the-loop 연동 (승인/거절 버튼)
 
 - [x] **문서화 (Documentation)**

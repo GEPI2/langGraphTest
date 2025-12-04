@@ -1,0 +1,9 @@
+streamlit
+langchain
+langchain-core
+langchain-community
+langchain-google-genai
+langgraph
+langgraph-checkpoint-sqlite
+python-dotenv
+# docker # Streamlit Cloud에서는 docker를 지원하지 않으므로 주석 처리하거나 제거

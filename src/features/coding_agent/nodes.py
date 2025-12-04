@@ -74,19 +74,22 @@ def execute_code(state: AgentState) -> Dict[str, Any]:
     
     # 샌드박스 실행
     try:
-        # Docker가 없거나 실패할 경우를 대비한 안전장치 (개발 환경용)
+        # Docker가 없거나 실패할 경우를 대비한 안전장치 (개발 환경용 및 Streamlit Cloud용)
         # 실제 프로덕션에서는 Docker가 필수여야 합니다.
         import docker
         try:
-            docker.from_env().ping()
+            client = docker.from_env()
+            client.ping()
             output = run_in_sandbox(code)
         except Exception as e:
-            print(f"Docker 연결 실패, 로컬 실행으로 대체합니다: {e}")
+            print(f"Docker 연결 실패 (Streamlit Cloud 등), 로컬 실행으로 대체합니다: {e}")
             # Fallback to local exec (WARNING: INSECURE)
+            # Streamlit Cloud와 같은 환경에서는 Docker를 사용할 수 없으므로 이 경로로 실행됩니다.
             old_stdout = sys.stdout
             redirected_output = sys.stdout = io.StringIO()
             try:
-                exec(code)
+                # 안전하지 않지만 데모를 위해 허용
+                exec(code, {}, {})
                 output = redirected_output.getvalue()
             except Exception as exec_e:
                 output = str(exec_e)
@@ -94,6 +97,19 @@ def execute_code(state: AgentState) -> Dict[str, Any]:
             finally:
                 sys.stdout = old_stdout
 
+    except ImportError:
+         # docker 라이브러리가 아예 없는 경우 (requirements.txt에서 뺀 경우)
+        print("Docker 라이브러리 없음, 로컬 실행으로 대체합니다.")
+        old_stdout = sys.stdout
+        redirected_output = sys.stdout = io.StringIO()
+        try:
+            exec(code, {}, {})
+            output = redirected_output.getvalue()
+        except Exception as exec_e:
+            output = str(exec_e)
+            return {"error": str(exec_e), "execution_output": None}
+        finally:
+            sys.stdout = old_stdout
     except Exception as e:
         return {"error": str(e), "execution_output": None}
 

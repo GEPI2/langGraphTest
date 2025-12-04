@@ -1,9 +1,13 @@
-streamlit
-langchain
-langchain-core
-langchain-community
+fastapi
+uvicorn
+langchain>=0.3
+langchain-core>=0.3
+langchain-community>=0.3
 langchain-google-genai
 langgraph
 langgraph-checkpoint-sqlite
+langserve[all]
 python-dotenv
-docker # EC2(Docker) 환경에서는 필요함
+pydantic>=2.0
+docker
+aiosqlite

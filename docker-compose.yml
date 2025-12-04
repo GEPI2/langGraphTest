@@ -1,13 +1,26 @@
 version: '3.8'
 
 services:
-  app:
-    build: .
+  backend:
+    build:
+      context: .
+      dockerfile: src/backend/Dockerfile
     ports:
-      - "8501:8501"
+      - "8000:8000"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock # Mount Docker socket for DooD (Docker-outside-of-Docker)
-      - ./checkpoints.sqlite:/app/checkpoints.sqlite # Persist SQLite DB
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./checkpoints.sqlite:/app/checkpoints.sqlite
+      - sandbox-data:/app/sandbox_data
     environment:
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
     restart: unless-stopped
+  frontend:
+    build: src/frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  sandbox-data:

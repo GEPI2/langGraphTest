@@ -1,34 +1,50 @@
 import docker
 import os
-import tempfile
 import time
+import uuid
+
+# 공유 볼륨 경로 (컨테이너 내부 기준)
+SANDBOX_DIR = "/app/sandbox_data"
 
 def run_in_sandbox(code: str, timeout: int = 30) -> str:
     """
-    Executes Python code in a secure Docker container.
+    Executes Python code in a secure Docker container using a shared volume.
     """
     client = docker.from_env()
     
-    # Create a temporary file for the code
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False, encoding='utf-8') as f:
+    # Ensure sandbox directory exists
+    os.makedirs(SANDBOX_DIR, exist_ok=True)
+
+    # Create a unique file for the code
+    filename = f"script_{uuid.uuid4().hex}.py"
+    host_path = os.path.join(SANDBOX_DIR, filename)
+    
+    with open(host_path, 'w', encoding='utf-8') as f:
         f.write(code)
-        host_path = f.name
-        filename = os.path.basename(host_path)
 
     try:
         # Run the container
-        # Mount the temp file to /app/script.py
-        # Use python:3.10-slim for a lightweight environment
+        # Mount the shared volume 'sandbox-data' to /app/sandbox_data in the sandbox container
+        # Note: When using DooD, the volume name 'langgraphtest_sandbox-data' (project_name + volume_name) 
+        # is usually required, but mounting by volume name is cleaner.
+        # However, since we are inside a container, we need to know how the host sees this volume.
+        # A simpler approach for DooD is to use 'volumes_from' if possible, but python-docker client uses 'volumes'.
+        # Let's try mounting the named volume directly.
+        
+        # IMPORTANT: The volume name depends on the docker-compose project name.
+        # Default is directory name 'langgraphtest'.
+        volume_name = "langgraphtest_sandbox-data" 
+
         container = client.containers.run(
             "python:3.10-slim",
-            command=f"python /app/{filename}",
-            volumes={os.path.dirname(host_path): {'bind': '/app', 'mode': 'ro'}},
-            working_dir="/app",
+            command=f"python /sandbox/{filename}",
+            volumes={volume_name: {'bind': '/sandbox', 'mode': 'ro'}},
+            working_dir="/sandbox",
             detach=True,
-            mem_limit="128m",  # Limit memory
+            mem_limit="128m",
             cpu_period=100000,
-            cpu_quota=50000,   # Limit CPU (50%)
-            network_disabled=True # Disable network for security
+            cpu_quota=50000,
+            network_disabled=True
         )
 
         # Wait for result or timeout
@@ -43,11 +59,12 @@ def run_in_sandbox(code: str, timeout: int = 30) -> str:
     except Exception as e:
         return f"Sandbox Error: {str(e)}"
     finally:
-        # Cleanup
+        # Cleanup container
         try:
             container.remove(force=True)
         except:
             pass
+        # Cleanup file
         if os.path.exists(host_path):
             os.remove(host_path)
 

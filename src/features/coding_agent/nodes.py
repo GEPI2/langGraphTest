@@ -63,11 +63,32 @@ def generate_code(state: AgentState) -> Dict[str, Any]:
 
     return {"code": new_code, "iterations": iterations + 1, "error": None, "messages": messages}
 
+def general_chat(state: AgentState) -> Dict[str, Any]:
+    """
+    코딩 요청이 아닌 일반적인 대화를 처리합니다.
+    """
+    messages = state['messages']
+    print("--- 일반 대화 중 ---")
+    
+    # 일반 대화용 시스템 프롬프트 (선택 사항)
+    # system_prompt = SystemMessage(content="당신은 친절한 AI 어시스턴트입니다.")
+    # messages = [system_prompt] + messages # 필요시 추가
+
+    response = llm.invoke(messages)
+    messages.append(response)
+    
+    return {"messages": messages}
+
 def execute_code(state: AgentState) -> Dict[str, Any]:
     """
     생성된 코드를 샌드박스(Docker) 환경에서 실행합니다.
     """
-    code = state['code']
+    code = state.get('code')
+    
+    # 코드가 없으면 실행하지 않음
+    if not code:
+        return {"execution_output": "실행할 코드가 없습니다.", "error": None}
+
     print("--- 코드 실행 중 (Sandbox) ---")
     print(code)
     print("-" * 20)

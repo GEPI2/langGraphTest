@@ -1,7 +1,7 @@
 from langgraph.graph import StateGraph, END
 from langgraph.checkpoint.memory import MemorySaver
 from .schema import AgentState
-from .nodes import generate_code, execute_code, human_review
+from .nodes import generate_code, execute_code, human_review, general_chat
 
 def should_continue(state: AgentState):
     """
@@ -32,15 +32,45 @@ def after_review(state: AgentState):
 workflow = StateGraph(AgentState)
 
 # 노드 추가
+# 노드 추가
 workflow.add_node("generate_code", generate_code)
 workflow.add_node("execute_code", execute_code)
 workflow.add_node("human_review", human_review)
+workflow.add_node("general_chat", general_chat) # 일반 대화 노드 추가
 
-# 진입점 설정
-workflow.set_entry_point("generate_code")
+# 라우팅 로직 (조건부 진입점)
+def route_request(state: AgentState):
+    messages = state['messages']
+    if not messages:
+        return "general_chat"
+        
+    last_message = messages[-1]
+    if hasattr(last_message, 'content'):
+        content = last_message.content
+    elif isinstance(last_message, dict):
+        content = last_message.get('content', '')
+    else:
+        content = str(last_message)
+    
+    # 간단한 키워드 기반 라우팅 (실제로는 LLM을 써서 분류하는 게 더 정확함)
+    # 여기서는 "코드", "짜줘", "만들어", "함수", "클래스" 등이 있으면 코딩 요청으로 간주
+    coding_keywords = ["코드", "짜줘", "만들어", "구현", "작성", "함수", "클래스", "code", "python", "파이썬"]
+    if any(keyword in content for keyword in coding_keywords):
+        return "generate_code"
+    else:
+        return "general_chat"
+
+workflow.set_conditional_entry_point(
+    route_request,
+    {
+        "generate_code": "generate_code",
+        "general_chat": "general_chat"
+    }
+)
 
 # 엣지 추가
 workflow.add_edge("generate_code", "execute_code")
+workflow.add_edge("general_chat", END) # 일반 대화는 바로 종료
 
 # 조건부 엣지 추가
 workflow.add_conditional_edges(
@@ -62,15 +92,12 @@ workflow.add_conditional_edges(
     }
 )
 
-from langgraph.checkpoint.sqlite import SqliteSaver
-import sqlite3
+from langgraph.checkpoint.memory import MemorySaver
 
 # ... (기존 코드)
 
-# 체크포인터 설정 (SQLite)
-# DB 파일이 없으면 자동 생성됩니다.
-conn = sqlite3.connect("checkpoints.sqlite", check_same_thread=False)
-memory = SqliteSaver(conn)
+# 체크포인터 설정 (Memory)
+memory = MemorySaver()
 
 # 컴파일 (human_review 전에 중단)
 app = workflow.compile(checkpointer=memory, interrupt_before=["human_review"])

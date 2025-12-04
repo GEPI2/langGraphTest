@@ -1,35 +1,48 @@
-# Antigravity Project Rules for LangGraph
+# Antigravity Project Rules: Vibe Coding Edition
 
-You are an expert AI assistant specializing in building LangGraph applications with Python.
+You are an expert AI assistant specializing in **LangGraph** and **Vibe Coding**.
+Your goal is to maintain high context awareness and produce "AI-friendly + Human-centric" code.
 
-## 1. Environment & Standards
-- **Language**: Python 3.10+
-- **Type Hinting**: STRICT. Use `typing` module (List, Dict, Optional, Union, etc.) or standard collections.
-- **Docstrings**: Google Style. Every function and class must have a docstring explaining purpose, args, and returns.
-- **Formatter**: Black (implied standard).
+## 1. Global Rules (Safety Protocol)
 
-## 2. LangGraph Best Practices
-- **State Management**:
-  - ALWAYS define a clear `State` using `TypedDict` or `Pydantic`.
-  - State keys should be descriptive.
-  - Use `Annotated` for reducer functions (e.g., `operator.add`) where appropriate.
-- **Nodes**:
-  - Each node should be a pure function or a method that takes `State` and returns a partial update.
-  - Keep nodes small and focused on a single responsibility.
-- **Graph Construction**:
-  - Use `StateGraph` for workflow definition.
-  - Clearly define `START` and `END` nodes.
-  - Use conditional edges for branching logic.
+1. **Read First**: Before writing code, ALWAYS read `SYSTEM_LOG.md` to understand the current context and task.
+2. **Structure Adherence**: Follow the **Feature-Sliced Lite** structure.
+    - `src/features/{feature_name}/` contains ALL related files for a feature.
+    - Separate Logic from Interface/Definition.
+3. **One Step at a Time**: Modify one feature at a time. Do not jump between features.
+4. **Error Handling (Real-Name Logging)**:
+    - Use explicit logging with file and function names.
+    - Example: `logger.error(f"[{__file__} : {func_name}] Error: {e}")`
+    - Use Guard Clauses to return early.
+5. **Recovery**: If lost, STOP, read `SYSTEM_LOG.md`, and report status to the user.
 
-## 3. Code Quality & Testing
-- **Error Handling**:
-  - Use `try/except` blocks in nodes that interact with external APIs (LLMs, Tools).
-  - Fail gracefully or return an error state rather than crashing the graph.
-- **Testing**:
-  - Use `pytest`.
-  - Write unit tests for individual nodes.
-  - Write integration tests for the full graph execution.
+## 2. Directory Structure (Feature-Sliced Lite)
 
-## 4. Project Structure
-- Keep the graph definition separate from the node logic if the graph grows large.
-- Use a `main.py` or `graph.py` as the entry point for the graph.
+- **Max Depth**: Keep it shallow (Max 3).
+- **Pattern**:
+
+  ```text
+  /src
+    /features
+      /auth
+        auth.nodes.py    # Logic (Nodes, pure functions)
+        auth.graph.py    # Structure (StateGraph definition)
+        auth.schema.py   # Data (State TypedDict)
+    /shared
+      /utils
+      /components
+  ```
+
+## 3. LangGraph Specifics
+
+- **State**: Define strictly in `*.schema.py`.
+- **Nodes**: Pure functions in `*.nodes.py`.
+- **Graph**: Assembly in `*.graph.py`.
+- **Type Hinting**: Strict Python 3.10+ typing.
+- **Docstrings**: Google Style.
+
+## 4. Workflow (The Vibe Routine)
+
+1. **Context Sync**: Read `SYSTEM_LOG.md`.
+2. **Feature Coding**: Implement in `src/features/...`.
+3. **Verify & Log**: Update `SYSTEM_LOG.md` with progress and issues.

@@ -1,12 +1,18 @@
 import sys
 import io
+import os
 from typing import Dict, Any
+from dotenv import load_dotenv
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from .schema import AgentState
 
-# --- 현재는 Mock LLM 사용 (나중에 실제 ChatOpenAI로 교체 예정) ---
-# llm = ChatOpenAI(model="gpt-4o")
+# 환경 변수 로드 (.env)
+load_dotenv()
+
+# Gemini 모델 초기화
+# API 키는 .env 파일의 GOOGLE_API_KEY를 사용합니다.
+llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0)
 
 def generate_code(state: AgentState) -> Dict[str, Any]:
     """
@@ -20,6 +26,16 @@ def generate_code(state: AgentState) -> Dict[str, Any]:
 
     print(f"--- 코드 생성 중 (반복 횟수: {iterations}) ---")
 
+    # 시스템 메시지 추가 (최초 1회)
+    if not messages:
+        system_prompt = (
+            "당신은 파이썬 코딩 전문가입니다. "
+            "사용자의 요청에 따라 실행 가능한 파이썬 코드를 작성하세요. "
+            "코드는 마크다운 코드 블록(```python ... ```) 없이 순수 코드만 반환하거나, "
+            "코드 블록을 포함한다면 파싱 가능한 형태로 제공하세요."
+        )
+        messages.append(SystemMessage(content=system_prompt))
+
     # 컨텍스트에 따라 프롬프트 구성
     if error:
         prompt = f"이전 코드가 다음 에러로 실패했습니다:\n{error}\n\n코드를 수정해주세요."
@@ -28,25 +44,23 @@ def generate_code(state: AgentState) -> Dict[str, Any]:
         prompt = f"사용자 피드백:\n{human_feedback}\n\n코드를 업데이트해주세요."
         messages.append(HumanMessage(content=prompt))
     elif not code:
-        # 초기 생성
+        # 초기 생성 (이미 messages에 사용자 요청이 있다고 가정)
         pass 
     
-    # 실제 시나리오에서는 여기서 LLM을 호출합니다.
-    # 데모를 위해 간단한 생성을 시뮬레이션합니다.
+    # LLM 호출
+    response = llm.invoke(messages)
+    new_code = response.content
     
-    # 시뮬레이션 로직
-    if not code:
-        # 초안 1: 구문 에러 포함 (데모용 의도적 에러)
-        new_code = "print('Hello World')\nprint(1/0) # 의도적 에러"
-    elif error and "division by zero" in error:
-        # 에러 수정
-        new_code = "print('Hello World')\nprint('수정됨: 0으로 나누기 방지')"
-    elif human_feedback and "polite" in human_feedback:
-        new_code = "print('안녕하십니까, 존경하는 세상이여!')"
-    else:
-        new_code = code # 변경 없음
+    # 마크다운 코드 블록 제거 (간단한 파싱)
+    if "```python" in new_code:
+        new_code = new_code.split("```python")[1].split("```")[0].strip()
+    elif "```" in new_code:
+        new_code = new_code.split("```")[1].split("```")[0].strip()
 
-    return {"code": new_code, "iterations": iterations + 1, "error": None}
+    # 메시지 기록 업데이트 (AI 응답 추가)
+    messages.append(response)
+
+    return {"code": new_code, "iterations": iterations + 1, "error": None, "messages": messages}
 
 def execute_code(state: AgentState) -> Dict[str, Any]:
     """

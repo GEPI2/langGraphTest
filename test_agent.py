@@ -4,7 +4,12 @@ def run_test():
     print("=== Starting Coding Agent Test ===")
     
     # Initial input
-    initial_state = {"messages": [], "iterations": 0}
+    # 의도적으로 에러가 발생하는 코드를 요청하여 자가 치유 기능을 테스트합니다.
+    from langchain_core.messages import HumanMessage
+    initial_state = {
+        "messages": [HumanMessage(content="Hello World를 출력하고, 그 다음 줄에서 0으로 나누는 파이썬 코드를 작성해줘.")], 
+        "iterations": 0
+    }
     
     # Run until interruption (Human Review)
     print("\n[1] Running until Human Review...")

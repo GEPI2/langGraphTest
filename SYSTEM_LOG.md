@@ -1,14 +1,28 @@
-# SYSTEM_LOG.md
+# 시스템 로그 (SYSTEM LOG)
 
-    - [x] Human-in-the-loop 연동 (승인/거절 버튼)
+## 프로토콜
+**필수**: 컨텍스트 보존을 위해 모든 주요 작업 또는 대화 세션이 끝날 때마다 이 파일을 업데이트해야 합니다.
+**형식**: 날짜 - 이벤트/결정 - 상세 내용
 
-- [x] **문서화 (Documentation)**
-  - [x] README.md 업데이트 (상세 가이드)
-  - [x] architecture.md 업데이트 (최신 구조 반영)
-- [x] **프로덕션 고도화 (Production Ready)**
-  - [x] **Sandbox (Docker)**: 안전한 코드 실행 환경 구축
-  - [x] **Persistence (SQLite/Postgres)**: 대화 기록 영구 저장
-  - [x] **Deployment (Docker)**: 배포용 Dockerfile 작성**Context Sync**: 작업 시작 전 이 파일을 읽고 현재 상태 파악.
+## 로그
+- **2025-12-05**: 프로젝트 전환 시작 (Project Pivot Initiated).
+    - **이전 상태**: 자가 치유 에이전트 (자율 오류 수정에 중점).
+    - **새로운 목표**: 동적 랭그래프 에이전트 서비스 (노/로우 코드 그래프 빌더).
+    - **주요 기능**:
+        - 비주얼 노드 에디터 (React Flow).
+        - LLM 보조 노드 코드 생성.
+        - 실시간 실행 시각화.
+        - 재귀적/순환적 그래프 지원.
+        - RAG 통합.
+    - **아키텍처 전략**:
+        - 백엔드: FastAPI + LangGraph (설정으로부터 동적 그래프 구성).
+        - 프론트엔드: React + React Flow.
 
-3. **Feature Coding**: `/src/features` 내에 기능 단위로 작업.
-4. **Verify & Log**: 작업 종료 전 에러 확인 및 이 파일 업데이트.
+- **2025-12-05**: ������Ʈ ���� ������ (Project Structure Reorganization).
+    - **����� ��û**: ���ϰ� ���丮�� ü�������� �����ϰ� �������� �� ���� �̵����� ����.
+    - **���� ����**:
+        - scripts/ ����: ��Ʈ�� ��ƿ��Ƽ ��ũ��Ʈ(debug_stream.py, gen_graph.py ��) �� deploy.sh �̵�.
+        - docs/artifacts/ ����: ���̾�׷�(*.mermaid) �� �̹���, �ؽ�Ʈ ���� �̵�.
+        - data/ ����: ���� DB ����(checkpoints.sqlite*) �̵�.
+        - legacy/ ����: ��Ʈ Dockerfile (Streamlit��) �� src/ui (Streamlit �ڵ�) �̵�.
+    - **���**: ������Ʈ ��Ʈ�� src, docs, scripts, data, legacy �� �ʼ� ���� ���Ϸ� ����ϰ� ������.

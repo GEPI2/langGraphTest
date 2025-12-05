@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+
 import ReactFlow, {
     Background,
     Controls,
@@ -72,7 +72,7 @@ interface GraphVisualizerProps {
 
 export default function GraphVisualizer({ currentNode }: GraphVisualizerProps) {
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-    const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+    const [edges, , onEdgesChange] = useEdgesState(initialEdges);
 
     // 현재 실행 중인 노드 하이라이트
     if (currentNode) {

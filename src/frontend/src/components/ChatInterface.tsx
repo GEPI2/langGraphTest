@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { Send, User, Bot, RefreshCw } from 'lucide-react'
-import { RemoteRunnable } from "@langchain/core/runnables/remote";
+
 import ReactMarkdown from 'react-markdown';
 
 interface Message {

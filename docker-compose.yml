@@ -6,21 +6,19 @@ services:
       context: .
       dockerfile: src/backend/Dockerfile
     ports:
-      - "8000:8000"
+      - "8001:8001"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./checkpoints.sqlite:/app/checkpoints.sqlite
-      - sandbox-data:/app/sandbox_data
+      - .:/app
     environment:
-      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
-    restart: unless-stopped
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    restart: always
+
   frontend:
-    build: src/frontend
+    build:
+      context: .
+      dockerfile: src/frontend/Dockerfile
     ports:
-      - "3000:3000"
+      - "80:80"
     depends_on:
       - backend
-    restart: unless-stopped
-
-volumes:
-  sandbox-data:
+    restart: always

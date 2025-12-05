@@ -7,3 +7,9 @@ env/
 venv/
 node_modules/
 .DS_Store
+
+dist/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+

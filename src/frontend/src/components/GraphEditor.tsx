@@ -13,18 +13,30 @@ import { useGraphStore } from '../store/graphStore';
 import LLMNode from './nodes/LLMNode';
 import CodeNode from './nodes/CodeNode';
 import { graphService } from '../services/api';
-import { Play, Save, Loader2 } from 'lucide-react';
+import { Play, Save, Loader2, Settings } from 'lucide-react';
+import { Button } from './ui/button';
+// Actually, let's stick to standard alert for now to avoid missing dependency 'use-toast' which I haven't created yet.
+
+import RAGNode from './nodes/RAGNode';
+import StartNode from './nodes/StartNode';
+import EndNode from './nodes/EndNode';
+import ToolNode from './nodes/ToolNode';
 
 const nodeTypes = {
   LLMNode: LLMNode,
   CodeNode: CodeNode,
-  // RAGNode: RAGNode, // Placeholder
+  RAGNode: RAGNode,
+  ToolNode: ToolNode,
+  StartNode: StartNode,
+  EndNode: EndNode,
 };
 
 const GraphEditor = () => {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [reactFlowInstance, setReactFlowInstance] = useState<any>(null);
   const [isRunning, setIsRunning] = useState(false);
+  const [executionResult, setExecutionResult] = useState<string | null>(null);
+  const hasAutoRun = useRef(false);
 
   const {
     nodes,
@@ -35,6 +47,19 @@ const GraphEditor = () => {
     addNode,
     toGraphConfig,
   } = useGraphStore();
+
+  // Auto-run on initial load
+  React.useEffect(() => {
+    if (!hasAutoRun.current && nodes.length > 0) {
+        console.log("Auto-running graph on init...");
+        hasAutoRun.current = true;
+        
+        // Small delay to ensure ReactFlow is ready
+        setTimeout(() => {
+            handleRun("안녕하세요");
+        }, 1000);
+    }
+  }, [nodes]);
 
   const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
@@ -80,68 +105,129 @@ const GraphEditor = () => {
     }
   };
 
-  const handleRun = async () => {
+  const runGraph = async (inputMessage?: string) => {
     const config = toGraphConfig();
     setIsRunning(true);
+    setExecutionResult(null); // Clear previous result
     try {
       // First save/update the graph
       await graphService.createGraph(config);
       
       // Then execute
-      const result = await graphService.executeGraph(config.id, { messages: [] });
+      const messageContent = inputMessage || "Hello";
+      const payload = { messages: [{ role: "user", content: messageContent }] };
+      
+      console.log("Executing with payload:", payload);
+      const result = await graphService.executeGraph(config.id, payload);
       console.log("Execution Result:", result);
-      alert(`Execution successful! Result: ${JSON.stringify(result, null, 2)}`);
-    } catch (error) {
+      
+      // Show result
+      const lastMessage = result.messages && result.messages.length > 0 
+        ? result.messages[result.messages.length - 1] 
+        : null;
+      
+      const responseText = lastMessage 
+        ? (typeof lastMessage.content === 'string' ? lastMessage.content : JSON.stringify(lastMessage.content, null, 2))
+        : JSON.stringify(result, null, 2);
+
+      setExecutionResult(responseText);
+    } catch (error: any) {
       console.error('Failed to execute graph', error);
-      alert('Failed to execute graph');
+      setExecutionResult(`Error: ${error.message || 'Failed to execute graph'}`);
     } finally {
       setIsRunning(false);
     }
   };
 
+  const handleRunClick = () => {
+    runGraph();
+  };
+
+  // Auto-run on initial load
+  React.useEffect(() => {
+    if (!hasAutoRun.current && nodes.length > 0) {
+        console.log("Auto-running graph on init...");
+        hasAutoRun.current = true;
+        
+        // Small delay to ensure ReactFlow is ready
+        setTimeout(() => {
+            runGraph("안녕하세요");
+        }, 1000);
+    }
+  }, [nodes]);
+
   return (
-    <div className="dndflow w-full h-screen flex flex-col">
-      <header className="h-14 border-b border-gray-200 flex items-center justify-between px-4 bg-white z-10">
-        <div className="font-bold text-xl">Dynamic LangGraph Builder</div>
-        <div className="flex gap-2">
-          <button
+    <div className="dndflow w-full h-screen flex flex-col bg-background text-foreground">
+      <header className="h-16 border-b flex items-center justify-between px-6 bg-card z-10 shadow-sm">
+        <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <Settings className="text-primary-foreground w-5 h-5" />
+            </div>
+            <div className="font-bold text-xl tracking-tight">Dynamic LangGraph Builder</div>
+        </div>
+        <div className="flex gap-3">
+          <Button
+            variant="outline"
             onClick={handleSave}
-            className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded text-sm font-medium transition-colors"
+            className="gap-2"
           >
             <Save size={16} />
             Save
-          </button>
-          <button
-            onClick={handleRun}
+          </Button>
+          <Button
+            onClick={handleRunClick}
             disabled={isRunning}
-            className="flex items-center gap-2 px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white rounded text-sm font-medium transition-colors disabled:opacity-50"
+            className="gap-2"
           >
             {isRunning ? <Loader2 size={16} className="animate-spin" /> : <Play size={16} />}
             Run
-          </button>
+          </Button>
         </div>
       </header>
       
       <div className="flex-1 flex overflow-hidden">
         <ReactFlowProvider>
           <Sidebar />
-          <div className="flex-1 h-full" ref={reactFlowWrapper}>
-            <ReactFlow
-              nodes={nodes}
-              edges={edges}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              onConnect={onConnect}
-              onInit={setReactFlowInstance}
-              onDrop={onDrop}
-              onDragOver={onDragOver}
-              nodeTypes={nodeTypes}
-              fitView
-            >
-              <Controls />
-              <MiniMap />
-              <Background gap={12} size={1} />
-            </ReactFlow>
+          <div className="flex-1 h-full relative flex flex-col" ref={reactFlowWrapper}>
+            <div className="flex-1 relative">
+                <ReactFlow
+                nodes={nodes}
+                edges={edges}
+                onNodesChange={onNodesChange}
+                onEdgesChange={onEdgesChange}
+                onConnect={onConnect}
+                onInit={setReactFlowInstance}
+                onDrop={onDrop}
+                onDragOver={onDragOver}
+                nodeTypes={nodeTypes}
+                fitView
+                className="bg-slate-50"
+                >
+                <Controls className="bg-white border-none shadow-md rounded-lg overflow-hidden" />
+                <MiniMap className="border-none shadow-md rounded-lg overflow-hidden" />
+                <Background gap={16} size={1} color="#e2e8f0" />
+                </ReactFlow>
+            </div>
+            
+            {/* Execution Result Panel */}
+            {executionResult && (
+                <div className="h-1/3 border-t bg-card p-4 overflow-auto shadow-inner z-20">
+                    <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-semibold text-lg">Execution Result</h3>
+                        <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={() => setExecutionResult(null)}
+                            className="h-8 w-8 p-0"
+                        >
+                            ✕
+                        </Button>
+                    </div>
+                    <pre className="bg-muted p-4 rounded-md overflow-auto text-sm font-mono whitespace-pre-wrap">
+                        {executionResult}
+                    </pre>
+                </div>
+            )}
           </div>
         </ReactFlowProvider>
       </div>

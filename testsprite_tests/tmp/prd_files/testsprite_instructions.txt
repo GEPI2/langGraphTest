@@ -1,0 +1,34 @@
+# TestSprite Instructions for Dynamic LangGraph Builder
+
+## Project Overview
+This project is a Dynamic LangGraph Builder that allows users to design, execute, and manage AI agents visually. It includes a React frontend (Shadcn UI, React Flow) and a FastAPI backend (LangGraph, MCP, RAG, Fine-tuning).
+
+## Testing Scope
+Focus on the following key areas:
+1.  **Graph Editor**: Node creation, connection, and execution.
+2.  **Backend Services**: Fine-tuning, RAG, and MCP endpoints.
+3.  **Docker Integration**: Service startup and communication.
+
+## Test Cases
+
+### 1. Graph Editor UI
+- **TC-001**: Verify that dragging a "LLMNode" from the sidebar to the canvas creates a new node.
+- **TC-002**: Verify that connecting two nodes creates an edge.
+- **TC-003**: Verify that clicking "Run" triggers the execution endpoint.
+- **TC-004**: Verify that the "Save" button persists the graph configuration.
+
+### 2. Backend Services
+- **TC-005**: `POST /finetune/jobs` should create a new job with "pending" status.
+- **TC-006**: `POST /rag/upload` should accept a file and return success status.
+- **TC-007**: `POST /mcp/servers` should register a new MCP server configuration.
+- **TC-008**: `GET /mcp/tools` should return a list of available tools (mocked).
+
+### 3. Integration
+- **TC-009**: Verify that the frontend can communicate with the backend (CORS check).
+- **TC-010**: Verify that Docker containers start without errors.
+
+## Environment Setup
+- Ensure Docker and Docker Compose are installed.
+- Run `docker-compose up --build` to start the environment.
+- Frontend: http://localhost:80
+- Backend: http://localhost:8001

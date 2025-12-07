@@ -20,7 +20,7 @@ const LLMNode = ({ id, data }: NodeProps) => {
           <label className="text-xs text-gray-500">Model</label>
           <input
             className="nodrag w-full text-xs border rounded p-1"
-            value={data.model || 'gemini-2.0-flash-exp'}
+            value={data.model || 'gpt-4o'}
             onChange={(evt) => handleChange('model', evt.target.value)}
           />
         </div>

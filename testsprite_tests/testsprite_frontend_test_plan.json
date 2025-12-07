@@ -1,0 +1,375 @@
+[
+  {
+    "id": "TC001",
+    "title": "Graph Editor Node Drag-and-Drop Functionality",
+    "description": "Verify that users can drag nodes from the sidebar and drop them onto the graph editor canvas, and the nodes appear correctly.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the Graph Editor page."
+      },
+      {
+        "type": "action",
+        "description": "Drag each type of available node (RAGNode, ToolNode, LLMNode, CodeNode) from the sidebar to the canvas."
+      },
+      {
+        "type": "assertion",
+        "description": "Check that the node appears on the canvas at the drop location for each node type."
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "Graph Editor Node Connection Management",
+    "description": "Verify that users can create and delete connections between nodes and the connections update visually and in the backend.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Add two nodes to the graph editor canvas."
+      },
+      {
+        "type": "action",
+        "description": "Connect the output of the first node to the input of the second node."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the connection is visually rendered and registered in the graph state."
+      },
+      {
+        "type": "action",
+        "description": "Delete the connection."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the connection is removed visually and from the graph state."
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Graph Editor Graph Save and Load",
+    "description": "Validate that graph configurations can be saved and later reloaded accurately with all nodes and connections intact.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Create a graph with multiple nodes and connections."
+      },
+      {
+        "type": "action",
+        "description": "Save the graph configuration via the frontend save functionality."
+      },
+      {
+        "type": "action",
+        "description": "Reload the graph editor page and load the saved graph."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that all nodes, connections, and properties appear as saved, matching the original configuration."
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Graph Execution Trigger and Backend Integration",
+    "description": "Verify that running a graph sends the correct execution request to the backend and the response is handled properly.",
+    "category": "integration",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Create or load a valid graph with executable nodes."
+      },
+      {
+        "type": "action",
+        "description": "Click the 'Run' or 'Execute' button on the Graph Editor."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a backend API call is made with correct graph data and nodes execution order."
+      },
+      {
+        "type": "assertion",
+        "description": "Check that the frontend displays execution results or status updates based on backend response."
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "RAG Dashboard Document Upload Success",
+    "description": "Verify that users can upload documents to the knowledge base successfully via the RAG dashboard.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the RAG Dashboard."
+      },
+      {
+        "type": "action",
+        "description": "Upload a valid document file using the upload interface."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the document is uploaded with a success status and added to the knowledge base list."
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "RAG Dashboard Document Upload Invalid File Handling",
+    "description": "Verify that uploading invalid or unsupported document formats results in appropriate error feedback.",
+    "category": "error handling",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the RAG Dashboard."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to upload an unsupported file format or corrupted document."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the system shows an error message indicating invalid upload and prevents adding the document."
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "RAG Dashboard Retrieval Test Functionality",
+    "description": "Test retrieval of uploaded documents to ensure knowledge base returns accurate responses.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Upload a known document to the knowledge base."
+      },
+      {
+        "type": "action",
+        "description": "Use the retrieval test feature to query content known to exist in the uploaded document."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the returned information matches the query and is relevant to the document content."
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "MCP Dashboard Server Registration and Validation",
+    "description": "Verify users can register MCP server connections and that the system validates server details correctly.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to MCP Dashboard."
+      },
+      {
+        "type": "action",
+        "description": "Input valid MCP server connection details and submit registration."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the server connection is registered successfully and appears in the list."
+      },
+      {
+        "type": "action",
+        "description": "Attempt registration with invalid or unreachable server details."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the system rejects the registration with an appropriate error message."
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "MCP Dashboard AI Tools Listing",
+    "description": "Verify the MCP dashboard can fetch and display the list of available AI tools from registered MCP servers.",
+    "category": "integration",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Ensure MCP server(s) are registered."
+      },
+      {
+        "type": "action",
+        "description": "Navigate to MCP Dashboard tool listing section."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the available AI tools for each MCP server are fetched from backend and listed correctly."
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Fine-tuning Dashboard Job Creation and Submission",
+    "description": "Verify that users can create new fine-tuning jobs by submitting valid training data and configuration.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to Fine-tuning Dashboard."
+      },
+      {
+        "type": "action",
+        "description": "Create a new fine-tuning job by uploading valid training dataset and specifying parameters."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the job is created successfully and appears in the job list with status 'Pending' or 'Running'."
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Fine-tuning Dashboard Job Status Monitoring",
+    "description": "Verify that fine-tuning job statuses update correctly from Pending to Running to Completed or Failed.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Create and submit a fine-tuning job."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the job status updates in real-time or on refresh according to backend processing."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify various statuses including Running, Completed, and Failed are handled and displayed correctly."
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "API Backend Endpoint Functional Verification",
+    "description": "Verify that all backend API endpoints respond correctly to valid create, upload, register, execute, and list requests with appropriate status codes and payloads.",
+    "category": "integration",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Send valid requests to all key API endpoints (graph execution, fine-tuning job management, RAG processing, MCP server config)."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify HTTP status codes indicate success (200, 201) and response bodies contain expected data."
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "System Handles Invalid User Inputs Gracefully",
+    "description": "Verify the system detects invalid inputs across all dashboards and editor forms and shows appropriate error messages without system crashes or invalid states.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Input invalid or malformed data in graph editor node properties, RAG uploads, MCP server details, and fine-tuning job parameters."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the system validates inputs, disables submit if invalid, and displays clear error messages inline or as alerts."
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Frontend-Backend Integration and CORS Verification",
+    "description": "Ensure the React frontend and FastAPI backend communicate without errors, observing proper CORS headers for cross-origin requests during regular operations and Docker startup.",
+    "category": "integration",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Start frontend and backend services via Docker."
+      },
+      {
+        "type": "action",
+        "description": "Perform typical user flows (graph editing, RAG upload, MCP registration, fine-tuning job creation)."
+      },
+      {
+        "type": "assertion",
+        "description": "Monitor network requests to verify no CORS errors or 4xx/5xx API errors occur and application functions smoothly."
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "Edge Case: Empty Graph Execution Handling",
+    "description": "Verify that attempting to execute an empty graph or graph with no executable nodes results in an informative error and no backend execution calls.",
+    "category": "error handling",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open the Graph Editor with no nodes or only non-executable nodes."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to run/execute the graph."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user is shown an informative error that no execution can proceed and no API call is made."
+      }
+    ]
+  },
+  {
+    "id": "TC016",
+    "title": "Edge Case: Large Document Upload in RAG Dashboard",
+    "description": "Test uploading a very large document file to the RAG knowledge base and verify system handles it correctly without performance degradation or crash.",
+    "category": "performance",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to RAG Dashboard."
+      },
+      {
+        "type": "action",
+        "description": "Upload a very large document that is within allowed size limits."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the upload succeeds, system remains responsive, and the knowledge base updates accordingly."
+      }
+    ]
+  },
+  {
+    "id": "TC017",
+    "title": "Edge Case: Duplicate MCP Server Registration",
+    "description": "Verify that attempting to register a duplicate MCP server connection is detected and prevented with a meaningful error message.",
+    "category": "error handling",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Register a new valid MCP server connection."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to register the same MCP server connection again."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the system rejects the duplicate registration and displays an appropriate error message."
+      }
+    ]
+  }
+]

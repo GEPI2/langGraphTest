@@ -45,6 +45,24 @@ class GraphBuilder:
                 pass
             else:
                 workflow.add_edge(real_source, real_target)
+
+        # 3. Connect START to StartNode if exists and not already connected
+        start_nodes = [n for n in config.nodes if n.type == "StartNode"]
+        if start_nodes:
+            # Assuming only one StartNode for now
+            start_node_id = start_nodes[0].id
+            # Check if there is already an edge from START
+            has_start_edge = any(e.source == "START" for e in config.edges)
+            if not has_start_edge:
+                workflow.add_edge(START, start_node_id)
+        else:
+            # Fallback: Connect START to the first node if no StartNode is defined
+            # and no edge from START exists
+            has_start_edge = any(e.source == "START" for e in config.edges)
+            if not has_start_edge and config.nodes:
+                first_node_id = config.nodes[0].id
+                print(f"DEBUG: No StartNode found. Auto-connecting START to {first_node_id}")
+                workflow.add_edge(START, first_node_id)
                 
         # 3. Compile
         # TODO: Add persistence (checkpointer) configuration

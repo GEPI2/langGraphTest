@@ -1,28 +1,20 @@
 # 시스템 로그 (SYSTEM LOG)
 
-## 프로토콜
-**필수**: 컨텍스트 보존을 위해 모든 주요 작업 또는 대화 세션이 끝날 때마다 이 파일을 업데이트해야 합니다.
-**형식**: 날짜 - 이벤트/결정 - 상세 내용
+## 프로젝트 개요
+**목수**: 컨텍스트 보존을 위해 모든 주요 작업 또는 세션이 끝날 때마다 이 로그를 업데이트합니다.
 
-## 로그
-- **2025-12-05**: 프로젝트 전환 시작 (Project Pivot Initiated).
-    - **이전 상태**: 자가 치유 에이전트 (자율 오류 수정에 중점).
-    - **새로운 목표**: 동적 랭그래프 에이전트 서비스 (노/로우 코드 그래프 빌더).
-    - **주요 기능**:
-        - 비주얼 노드 에디터 (React Flow).
-        - LLM 보조 노드 코드 생성.
-        - 실시간 실행 시각화.
-        - 재귀적/순환적 그래프 지원.
-        - RAG 통합.
-    - **아키텍처 전략**:
-        - 백엔드: FastAPI + LangGraph (설정으로부터 동적 그래프 구성).
-        - 프론트엔드: React + React Flow.
+## 최근 변경 사항 (2025-12-07)
 
-- **2025-12-05**: ������Ʈ ���� ������ (Project Structure Reorganization).
-    - **����� ��û**: ���ϰ� ���丮�� ü�������� �����ϰ� �������� �� ���� �̵����� ����.
-    - **���� ����**:
-        - scripts/ ����: ��Ʈ�� ��ƿ��Ƽ ��ũ��Ʈ(debug_stream.py, gen_graph.py ��) �� deploy.sh �̵�.
-        - docs/artifacts/ ����: ���̾�׷�(*.mermaid) �� �̹���, �ؽ�Ʈ ���� �̵�.
-        - data/ ����: ���� DB ����(checkpoints.sqlite*) �̵�.
-        - legacy/ ����: ��Ʈ Dockerfile (Streamlit��) �� src/ui (Streamlit �ڵ�) �̵�.
-    - **���**: ������Ʈ ��Ʈ�� src, docs, scripts, data, legacy �� �ʼ� ���� ���Ϸ� ����ϰ� ������.
+### 1. 그래프 실행 에러 해결 (Failed to execute graph)
+- **이슈**: `StartNode` 부재로 인한 LangGraph 유효성 검사 실패 (No entry point).
+- **조치 (Backend)**: `GraphBuilder`에 Fallback 로직 추가 (StartNode 없을 시 첫 번째 노드 자동 연결).
+- **조치 (Frontend)**: `StartNode`, `EndNode` 컴포넌트 추가 및 사이드바 등록.
+- **결과**: `TC011` 테스트 통과, 프론트엔드 정상 실행 확인.
+
+### 2. 프론트엔드 개발 환경 개선
+- **이슈**: Docker 환경에서 코드 수정 시 브라우저 반영 안 됨.
+- **조치**: `Dockerfile.dev` 생성 및 `vite.config.ts`에 `usePolling: true` 설정 추가.
+- **결과**: Hot Reload 정상 작동 확인.
+
+### 3. 테스트 및 검증 (진행 중)
+- **계획**: 테스트 시나리오 문서화, UI/LLM 노드 검증, 사용자 가이드 작성.

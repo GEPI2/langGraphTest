@@ -31,10 +31,36 @@ interface GraphState {
 }
 
 export const useGraphStore = create<GraphState>((set, get) => ({
-  nodes: [],
-  edges: [],
+  nodes: [
+    {
+      id: 'start-node',
+      type: 'StartNode',
+      position: { x: 100, y: 200 },
+      data: { label: 'Start' },
+    },
+    {
+      id: 'llm-node',
+      type: 'LLMNode',
+      position: { x: 400, y: 200 },
+      data: { 
+        label: 'LLM Node',
+        model: 'gpt-4o',
+        system_prompt: "You are a helpful assistant named Jarvis."
+      },
+    },
+    {
+      id: 'end-node',
+      type: 'EndNode',
+      position: { x: 700, y: 200 },
+      data: { label: 'End' },
+    },
+  ],
+  edges: [
+    { id: 'e1', source: 'start-node', target: 'llm-node' },
+    { id: 'e2', source: 'llm-node', target: 'end-node' },
+  ],
   graphId: 'graph_' + Math.random().toString(36).substr(2, 9),
-  graphName: 'New Agent',
+  graphName: 'Auto-Run Graph',
 
   onNodesChange: (changes: NodeChange[]) => {
     set({

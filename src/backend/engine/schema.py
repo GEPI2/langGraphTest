@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 class NodeConfig(BaseModel):
     """Configuration for a single node in the graph."""
     id: str = Field(..., description="Unique identifier for the node")
-    type: Literal["LLMNode", "CodeNode", "RAGNode", "HumanNode"] = Field(..., description="Type of the node")
+    type: Literal["LLMNode", "CodeNode", "RAGNode", "HumanNode", "StartNode", "EndNode"] = Field(..., description="Type of the node")
     config: Dict[str, Any] = Field(default_factory=dict, description="Specific configuration for the node type")
     position: Optional[Dict[str, float]] = Field(None, description="UI position (x, y)")
 

@@ -1,0 +1,76 @@
+# TestSprite Debugging List & Test Plan
+
+## 1. Frontend Test Cases (UI/UX & Integration)
+
+### Graph Editor
+- **[ ] TC001: Node Drag-and-Drop**
+  - Action: Drag RAGNode/ToolNode/LLMNode/CodeNode from sidebar to canvas.
+  - Expected: Node appears at drop location.
+- **[ ] TC002: Connection Management**
+  - Action: Connect two nodes; Delete a connection.
+  - Expected: Visual connection appears/disappears; Backend state updates.
+- **[ ] TC003: Graph Save/Load**
+  - Action: Save a complex graph; Reload page; Load graph.
+  - Expected: Graph restores with all nodes and connections intact.
+- **[ ] TC004: Execution Trigger**
+  - Action: Click 'Run' button.
+  - Expected: Backend API called; Results displayed.
+- **[ ] TC015: Empty Graph Handling**
+  - Action: Run empty graph.
+  - Expected: Informative error message; No backend call.
+
+### RAG Dashboard
+- **[ ] TC005: Document Upload**
+  - Action: Upload valid text/PDF file.
+  - Expected: Success status; Added to list.
+- **[ ] TC006: Invalid File Handling**
+  - Action: Upload unsupported file.
+  - Expected: Error message.
+- **[ ] TC007: Retrieval Test**
+  - Action: Query content from uploaded doc.
+  - Expected: Accurate results returned.
+- **[ ] TC016: Large File Upload**
+  - Action: Upload large valid file.
+  - Expected: System remains responsive; Upload succeeds.
+
+### MCP Dashboard
+- **[ ] TC008: Server Registration**
+  - Action: Register new MCP server (stdio).
+  - Expected: Server appears in list.
+- **[ ] TC009: Tool Listing**
+  - Action: View tools of registered server.
+  - Expected: Tools fetched and listed.
+- **[ ] TC017: Duplicate Registration**
+  - Action: Register same server twice.
+  - Expected: Error message preventing duplicate.
+
+### Fine-tuning Dashboard
+- **[ ] TC010: Job Creation**
+  - Action: Create job with valid dataset.
+  - Expected: Job created with 'Pending' status.
+- **[ ] TC011: Status Monitoring**
+  - Action: Monitor running job.
+  - Expected: Status updates (Pending -> Running -> Completed/Failed).
+
+## 2. Backend Test Cases (API & Logic)
+
+- **[ ] TC_BE_001: Graph Execution API**
+  - Endpoint: `POST /graph/execute`
+  - Verify: Correct execution of defined nodes.
+- **[ ] TC_BE_003: RAG Upload API**
+  - Endpoint: `POST /rag/upload`
+  - Verify: File accepted, chunked, and stored in ChromaDB.
+- **[ ] TC_BE_005: MCP Registration API**
+  - Endpoint: `POST /mcp/servers`
+  - Verify: Server config stored correctly.
+- **[ ] TC_BE_007: Fine-tuning Job API**
+  - Endpoint: `POST /finetune/jobs`
+  - Verify: Job ID returned; Background task started.
+- **[ ] TC_BE_010: Error Handling**
+  - Verify: Invalid inputs return 400/422 errors, not 500 crashes.
+
+## 3. Integration & System
+- **[ ] TC014: Frontend-Backend CORS**
+  - Verify: No CORS errors during API calls from browser (port 80 -> 8001).
+- **[ ] TC013: Global Error Handling**
+  - Verify: UI handles API errors gracefully (toasts/alerts).

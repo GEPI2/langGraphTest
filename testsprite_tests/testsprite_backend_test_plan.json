@@ -1,0 +1,52 @@
+[
+  {
+    "id": "TC001",
+    "title": "test_graph_editor_node_drag_and_drop",
+    "description": "Verify that nodes can be dragged and dropped successfully in the Graph Editor and that connections between nodes can be created and managed in real-time."
+  },
+  {
+    "id": "TC002",
+    "title": "test_graph_execution_trigger",
+    "description": "Test that executing a graph triggers the appropriate backend API calls and returns successful execution status."
+  },
+  {
+    "id": "TC003",
+    "title": "test_rag_dashboard_document_upload",
+    "description": "Validate that documents can be uploaded to the RAG knowledge base through the RAG Dashboard and that the upload process returns appropriate success or error responses."
+  },
+  {
+    "id": "TC004",
+    "title": "test_rag_dashboard_retrieval_testing",
+    "description": "Ensure that the RAG Dashboard allows testing of information retrieval from uploaded documents and returns accurate retrieval results."
+  },
+  {
+    "id": "TC005",
+    "title": "test_mcp_dashboard_server_registration",
+    "description": "Verify that new MCP server connections can be registered via the MCP Dashboard and that the backend API correctly stores and manages these connections."
+  },
+  {
+    "id": "TC006",
+    "title": "test_mcp_dashboard_tool_listing",
+    "description": "Test that the MCP Dashboard can retrieve and display a list of available AI tools from registered MCP servers."
+  },
+  {
+    "id": "TC007",
+    "title": "test_finetuning_dashboard_job_creation",
+    "description": "Validate that users can create new fine-tuning jobs through the Fine-tuning Dashboard and that the backend API accepts and processes these job creation requests."
+  },
+  {
+    "id": "TC008",
+    "title": "test_finetuning_dashboard_job_monitoring",
+    "description": "Ensure that the Fine-tuning Dashboard provides real-time status updates for fine-tuning jobs and accurately reflects job progress and completion."
+  },
+  {
+    "id": "TC009",
+    "title": "test_backend_api_graph_saving_and_loading",
+    "description": "Test that graph configurations can be saved via the backend API and that saved configurations can be re-loaded correctly without data loss or corruption."
+  },
+  {
+    "id": "TC010",
+    "title": "test_backend_api_error_handling_for_invalid_inputs",
+    "description": "Verify that the backend API handles invalid user inputs gracefully by returning appropriate error messages and preventing faulty states in the system."
+  }
+]

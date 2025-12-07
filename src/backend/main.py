@@ -11,6 +11,9 @@ from src.backend.engine.schema import GraphConfig
 from src.backend.engine.builder import GraphBuilder
 from src.backend.engine.meta_agent import MetaAgent
 from src.backend.engine.state import AgentState
+from src.backend.services.finetune.manager import router as finetune_router
+from src.backend.services.rag.manager import router as rag_router
+from src.backend.services.mcp.client import router as mcp_router
 
 app = FastAPI(
     title="Dynamic LangGraph Agent API",
@@ -28,6 +31,10 @@ async def startup_event():
 async def root():
     return {"message": "Dynamic LangGraph Agent API is running"}
 
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
+
 # CORS configuration
 app.add_middleware(
     CORSMiddleware,
@@ -36,6 +43,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(finetune_router)
+app.include_router(rag_router)
+app.include_router(mcp_router)
 
 # In-memory storage for MVP
 graph_configs: Dict[str, GraphConfig] = {}
@@ -67,7 +78,13 @@ async def create_graph(config: GraphConfig):
         
         return {"status": "success", "graph_id": config.id, "message": "Graph compiled successfully"}
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/graph/save")
+async def create_graph_alias(config: GraphConfig):
+    return await create_graph(config)
 
 @app.get("/graphs/{graph_id}")
 async def get_graph(graph_id: str):
@@ -101,6 +118,8 @@ async def execute_graph(graph_id: str, request: ExecuteRequest):
         
         return result
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/nodes/generate")

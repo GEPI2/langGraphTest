@@ -1,0 +1,23 @@
+fastapi
+uvicorn
+langgraph
+langchain
+langchain-core
+langchain-openai
+langchain-google-genai
+langchain-community
+pydantic
+python-dotenv
+requests
+pytest
+httpx
+# RAG
+chromadb
+sentence-transformers
+# Fine-tuning
+peft
+transformers
+datasets
+torch
+# MCP
+mcp

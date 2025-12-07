@@ -1,0 +1,63 @@
+{
+  "tech_stack": [
+    "Python",
+    "FastAPI",
+    "LangChain",
+    "LangGraph",
+    "ChromaDB",
+    "TypeScript",
+    "React",
+    "Vite",
+    "TailwindCSS",
+    "Shadcn UI",
+    "React Flow"
+  ],
+  "features": [
+    {
+      "name": "Graph Editor",
+      "description": "Visual editor for designing LangGraph agents using React Flow. Supports Drag & Drop of nodes.",
+      "files": [
+        "src/frontend/src/components/GraphEditor.tsx",
+        "src/frontend/src/components/Sidebar.tsx",
+        "src/frontend/src/components/nodes/RAGNode.tsx",
+        "src/frontend/src/components/nodes/ToolNode.tsx",
+        "src/frontend/src/components/nodes/LLMNode.tsx",
+        "src/frontend/src/components/nodes/CodeNode.tsx"
+      ]
+    },
+    {
+      "name": "RAG Dashboard",
+      "description": "Dashboard for managing RAG knowledge base, uploading documents, and testing retrieval.",
+      "files": [
+        "src/frontend/src/components/dashboard/RAGDashboard.tsx",
+        "src/backend/services/rag/manager.py",
+        "src/backend/services/rag/processing.py",
+        "src/backend/services/rag/store.py"
+      ]
+    },
+    {
+      "name": "MCP Dashboard",
+      "description": "Dashboard for managing MCP server connections and viewing available tools.",
+      "files": [
+        "src/frontend/src/components/dashboard/MCPDashboard.tsx",
+        "src/backend/services/mcp/client.py",
+        "src/backend/services/mcp/client_manager.py"
+      ]
+    },
+    {
+      "name": "Fine-tuning Dashboard",
+      "description": "Dashboard for creating and monitoring fine-tuning jobs.",
+      "files": [
+        "src/frontend/src/components/dashboard/FineTuneDashboard.tsx",
+        "src/backend/services/finetune/manager.py"
+      ]
+    },
+    {
+      "name": "Backend API",
+      "description": "FastAPI backend providing endpoints for all services.",
+      "files": [
+        "src/backend/main.py"
+      ]
+    }
+  ]
+}

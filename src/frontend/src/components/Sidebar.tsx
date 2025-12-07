@@ -12,6 +12,24 @@ const Sidebar = () => {
       <div className="text-sm text-gray-500 mb-4">Drag nodes to the canvas</div>
 
       <div
+        className="p-3 border-2 border-purple-400 rounded cursor-move bg-white hover:bg-purple-50 transition-colors"
+        onDragStart={(event) => onDragStart(event, 'StartNode')}
+        draggable
+      >
+        <div className="font-bold text-purple-700">Start Node</div>
+        <div className="text-xs text-gray-500">Entry point of the graph</div>
+      </div>
+
+      <div
+        className="p-3 border-2 border-red-400 rounded cursor-move bg-white hover:bg-red-50 transition-colors"
+        onDragStart={(event) => onDragStart(event, 'EndNode')}
+        draggable
+      >
+        <div className="font-bold text-red-700">End Node</div>
+        <div className="text-xs text-gray-500">Exit point of the graph</div>
+      </div>
+
+      <div
         className="p-3 border-2 border-stone-400 rounded cursor-move bg-white hover:bg-stone-50 transition-colors"
         onDragStart={(event) => onDragStart(event, 'LLMNode')}
         draggable
